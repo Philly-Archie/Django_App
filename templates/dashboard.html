@@ -1,0 +1,86 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<h3>Welcome {{ request.user }}</h3>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li class="alert">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<form method="GET" action="" class="nav-search nav-search-mobile">
+    <input value="{{ q }}" name="q" class="nav-search-input" type="text" placeholder="Search for books">
+    <button class="nav-search-button" type="submit">Search</button>
+</form>
+{% if user_role.role == 'Student' %}
+<div class="student-books-container">
+    {% for book in books %}
+    <div class="book-card">
+        <div class="book-card-image-container">
+            <image class="book-card-image" src="{% static 'images/studentBook.png' %}" alt="">
+        </div>
+        <div class="book-card-text">
+            <h3>{{ book.title }}</h3>
+            <p>{{ book.description}}</p>
+            <p class="small-student-text">By {{ book.author }}</p>
+            <a class="edit-button" href="{% url 'borrow_book' book.id %}">Borrow</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="dashboard-card-container">
+    <div class="dashboard-card">
+        <h1>{{ total_books }}</h1>
+        <p>Total Book(s)</p>
+    </div>
+    <div class="dashboard-card">
+        <h1>{{ total_students }}</h1>
+        <p>Total Students(s)</p>
+    </div>
+    <div class="dashboard-card">
+        <h1>{{ total_fines }}</h1>
+        <p>Total Fines(s)</p>
+    </div>
+</div>
+<div class="">
+    <h3>All Books</h3>
+    <a class="button-primary" href="{% url 'create_book' %}">Add A New Book</a>
+    <table class="books-table-container">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th class="table-responsive">Author</th>
+                <th class="table-responsive">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>
+                    {{ book.title }}
+                    <div class="table-show-mobile">
+                        Author: {{ book.author }} <br>
+                        Description: {{ book.description }} <br>
+                        <div class="table-actions">
+                            <a href="{% url 'edit_book' book.id %}" class="edit-button">edit</a>
+                            <a href="{% url 'delete_book' book.id %}" class="delete-button">delete</a>
+                        </div>
+                    </div>
+                </td>
+                <td class="table-responsive">{{ book.author }}</td>
+                <td class="table-responsive">{{ book.description }}</td>
+                <td class="table-actions table-responsive">
+                    <a href="{% url 'edit_book' book.id %}" class="edit-button">edit</a>
+                    <a href="{% url 'delete_book' book.id %}" class="delete-button">delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock%}
