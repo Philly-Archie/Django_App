@@ -37,8 +37,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'base.apps.BaseConfig'
+    'base.apps.BaseConfig',
+    'mozilla_django_oidc'
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# OIDC Configuration
+OIDC_RP_CLIENT_ID = 'mycleint'
+OIDC_RP_CLIENT_SECRET = 'your-client-secret'
+OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/auth'
+OIDC_OP_TOKEN_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/token'
+OIDC_OP_USER_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/userinfo'
+OIDC_OP_JWKS_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/certs'
+LOGIN_URL = '/oidc/authenticate/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
