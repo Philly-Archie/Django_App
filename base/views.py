@@ -15,43 +15,43 @@ from django.utils import timezone
 # SIGNUP
 
 
-def signup(request):
-    form = SignUpForm()
-    context = {
-        'username': '',
-        'password1': '',
-        'password2': '',
-        'email': '',
-        'form': form
-    }
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        context['username'] = request.POST.get('username')
-        context['password1'] = request.POST.get('password1')
-        context['password2'] = request.POST.get('password2')
-        context['email'] = request.POST.get('email')
-        context['form'] = form
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password1")
-            form.save()
-            new_user = authenticate(username=username, password=password)
-            role = RoleForm({'user': new_user.id, 'role': 'Student'})
-            role.save()
-            if new_user is not None:
-                login(request, new_user)
-                return redirect("home")
-        else:
-            messages.error(request, form.errors)
+# def signup(request):
+#     form = SignUpForm()
+#     context = {
+#         'username': '',
+#         'password1': '',
+#         'password2': '',
+#         'email': '',
+#         'form': form
+#     }
+#     if request.method == 'POST':
+#         form = SignUpForm(request.POST)
+#         context['username'] = request.POST.get('username')
+#         context['password1'] = request.POST.get('password1')
+#         context['password2'] = request.POST.get('password2')
+#         context['email'] = request.POST.get('email')
+#         context['form'] = form
+#         if form.is_valid():
+#             username = form.cleaned_data.get("username")
+#             password = form.cleaned_data.get("password1")
+#             form.save()
+#             new_user = authenticate(username=username, password=password)
+#             role = RoleForm({'user': new_user.id, 'role': 'Student'})
+#             role.save()
+#             if new_user is not None:
+#                 login(request, new_user)
+#                 return redirect("home")
+#         else:
+#             messages.error(request, form.errors)
 
-    return render(request, "auth/signup.html", context)
+#     return render(request, "auth/signup.html", context)
 
 
-# login views
+# # login views
 
-def logoutUser(request):
-    logout(request)
-    return redirect('login')
+# def logoutUser(request):
+#     logout(request)
+#     return redirect('login')
 
 
 @login_required(login_url='/login')
@@ -119,32 +119,32 @@ def deleteBook(request, pk):
 # login views
 
 
-def loginPage(request):
-    context = {
-        'username': '',
-        'password': ''
-    }
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+# def loginPage(request):
+#     context = {
+#         'username': '',
+#         'password': ''
+#     }
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
 
-        context['username'] = username
-        context['password'] = password
+#         context['username'] = username
+#         context['password'] = password
 
-        try:
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, 'Invalid Credentials')
+#         try:
+#             user = User.objects.get(username=username)
+#         except:
+#             messages.error(request, 'Invalid Credentials')
 
-        user = authenticate(request, username=username, password=password)
+#         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'Wrong credentials')
+#         if user is not None:
+#             login(request, user)
+#             return redirect('home')
+#         else:
+#             messages.error(request, 'Wrong credentials')
 
-    return render(request, 'auth/login.html', context)
+#     return render(request, 'auth/login.html', context)
 
 # Book_requests
 

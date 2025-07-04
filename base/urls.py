@@ -1,11 +1,17 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from django.shortcuts import redirect
+
+def oidc_login_redirect(request):
+    return redirect('/oidc/authenticate/')
+
 
 urlpatterns = [
-    path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),
-    path("signup/", views.signup, name="signup"),
+    path('login/', oidc_login_redirect, name='login'),
+    # path('login/', views.loginPage, name='login'),
+    # path('logout/', views.logoutUser, name='logout'),
+    # path("signup/", views.signup, name="signup"),
     path('', views.home, name='home'),
     path('books/create-book', views.createBook, name='create_book'),
     path('books/edit-book/<str:pk>/', views.editBook, name='edit_book'),
