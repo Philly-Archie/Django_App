@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,21 +42,42 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
-    'mozilla_django_oidc'
+    'mozilla_django_oidc',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid_connect',
 ]
 
 AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
     'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        "APPS": [
+            {
+                "provider_id": "keycloak",
+                "name": "Keycloak",
+                "client_id": os.getenv('OIDC_RP_CLIENT_ID'),
+                "secret": os.getenv('OIDC_RP_CLIENT_SECRET'),
+                "settings": {
+                    "server_url": "http://keycloak:8080/realms/master/.well-known/openid-configuration",
+                },
+            }
+        ]
+    }
+}
+
 # OIDC Configuration
-OIDC_RP_CLIENT_ID = 'mycleint'
-OIDC_RP_CLIENT_SECRET = 'your-client-secret'
-OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/auth'
-OIDC_OP_TOKEN_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/token'
-OIDC_OP_USER_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/userinfo'
-OIDC_OP_JWKS_ENDPOINT = 'http://127.0.0.1:8080/realms/django/protocol/openid-connect/certs'
+OIDC_RP_CLIENT_ID = os.getenv('OIDC_RP_CLIENT_ID')
+OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_RP_CLIENT_SECRET')
+OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-connect/auth'
+OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-connect/token'
+OIDC_OP_USER_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-connect/userinfo'
+OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-connect/certs'
 LOGIN_URL = '/oidc/authenticate/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -63,6 +88,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
