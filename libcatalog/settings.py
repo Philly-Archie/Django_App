@@ -80,7 +80,9 @@ OIDC_OP_USER_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-co
 OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/realms/myrealm/protocol/openid-connect/certs'
 LOGIN_URL = '/oidc/authenticate/'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/signup/'
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_LOGOUT_REDIRECT_URL = '/signup/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

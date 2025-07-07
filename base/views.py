@@ -15,36 +15,36 @@ from django.utils import timezone
 # SIGNUP
 
 
-# def signup(request):
-#     form = SignUpForm()
-#     context = {
-#         'username': '',
-#         'password1': '',
-#         'password2': '',
-#         'email': '',
-#         'form': form
-#     }
-#     if request.method == 'POST':
-#         form = SignUpForm(request.POST)
-#         context['username'] = request.POST.get('username')
-#         context['password1'] = request.POST.get('password1')
-#         context['password2'] = request.POST.get('password2')
-#         context['email'] = request.POST.get('email')
-#         context['form'] = form
-#         if form.is_valid():
-#             username = form.cleaned_data.get("username")
-#             password = form.cleaned_data.get("password1")
-#             form.save()
-#             new_user = authenticate(username=username, password=password)
-#             role = RoleForm({'user': new_user.id, 'role': 'Student'})
-#             role.save()
-#             if new_user is not None:
-#                 login(request, new_user)
-#                 return redirect("home")
-#         else:
-#             messages.error(request, form.errors)
+def signup(request):
+    form = SignUpForm()
+    context = {
+        'username': '',
+        'password1': '',
+        'password2': '',
+        'email': '',
+        'form': form
+    }
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        context['username'] = request.POST.get('username')
+        context['password1'] = request.POST.get('password1')
+        context['password2'] = request.POST.get('password2')
+        context['email'] = request.POST.get('email')
+        context['form'] = form
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password1")
+            form.save()
+            new_user = authenticate(username=username, password=password)
+            role = RoleForm({'user': new_user.id, 'role': 'Student'})
+            role.save()
+            if new_user is not None:
+                login(request, new_user)
+                return redirect("home")
+        else:
+            messages.error(request, form.errors)
 
-#     return render(request, "auth/signup.html", context)
+    return render(request, "auth/signup.html", context)
 
 
 # # login views
@@ -61,8 +61,12 @@ def home(request):
     total_students = Role.objects.filter(role='Student').count()
     total_books = Book.objects.count()
     books = Book.objects.filter(Q(title__icontains=q) | Q(author__icontains=q))
-    user_role = Role.objects.get(user=request.user.id)
+    
     total_fines = Fine.objects.filter(status='Not Paid').count()
+    try:
+        user_role = Role.objects.get(user=request.user.id)
+    except Role.DoesNotExist:
+        user_role = None
 
     context = {
         'books': books,

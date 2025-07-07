@@ -21,9 +21,18 @@
     </div>
 
     <div class="sidebar-link-container sidebar-link-logout">
-        <a class="sidebar-link" href="{% url 'logout' %}">
+        <!-- Using a form to handle logout with CSRF token -->
+        <form action="{% url 'oidc_logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="sidebar-link" style="background:none;border:none;padding:0;">
+                <img class="sidebar-image" alt="logout" src="{% static 'images/logout.png' %}" />
+            </button>
+        </form>
+        <span class="tooltip sidebar-tooltip-logout">Logout</span>
+    </div>
+        <!-- <a class="sidebar-link" href="">
             <img class="sidebar-image" alt="fines" src="{% static 'images/logout.png' %}" />
         </a>
         <span class="tooltip sidebar-tooltip-logout">Logout</span>
-    </div>
+    </div> -->
 </nav>
